@@ -2,12 +2,12 @@
   "ver": "1.1.43",
   "importer": "prefab",
   "imported": true,
-  "uuid": "c0057cbc-c541-45d2-9ec9-a84a6feee7f5",
+  "uuid": "019c141c-f280-4113-a207-93a3c77c4b43",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "OnePrefab"
+    "syncNodeName": "Footer"
   }
 }
