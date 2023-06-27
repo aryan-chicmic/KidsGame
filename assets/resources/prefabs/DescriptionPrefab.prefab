@@ -142,8 +142,8 @@
     },
     "_contentSize": {
       "__type__": "cc.Size",
-      "width": 1900,
-      "height": 1000
+      "width": 2000,
+      "height": 1100
     },
     "_anchorPoint": {
       "__type__": "cc.Vec2",
@@ -246,7 +246,7 @@
     "__prefab": {
       "__id__": 10
     },
-    "_opacity": 155,
+    "_opacity": 200,
     "_id": ""
   },
   {
