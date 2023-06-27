@@ -1,4 +1,4 @@
-import { _decorator, AnimationClip, Component, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from "cc";
+import { _decorator, AnimationClip, AudioSource, Component, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from "cc";
 import { singleton } from "./singleton";
 import { MainScript } from "./MainScript";
 
