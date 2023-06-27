@@ -15,6 +15,7 @@ export class MainScript extends Component {
   @property({ type: Node })
   footerAnimNode: Node = null;
   onClick(event) {
+    this.node.getComponent(AudioSource).pause();
     singleton.getInstance().Target = event.target.name;
 
     const playAnimationAndSound = () => {

@@ -23,6 +23,9 @@ export class PrefabScript extends Component {
 
   start() {}
   onLoad(): void {
+    this.node.parent.getChildByName("Bg").getComponent(AudioSource).play();
+    this.node.parent.getChildByName("Bg").getComponent(AudioSource).volume = 0.5;
+    this.node.parent.getChildByName("Bg").getComponent(AudioSource).loop = true;
     this.targetChecker();
     this.animateCracker();
     this.animateCracker();
@@ -30,6 +33,7 @@ export class PrefabScript extends Component {
   targetChecker() {
     switch (singleton.getInstance().Target) {
       case "One":
+        this.dog.setScale(0.1, 0.1);
         this.settingSprites(0, "1 DOG");
         break;
       case "Two":
@@ -65,6 +69,7 @@ export class PrefabScript extends Component {
   }
 
   onCloseClick() {
+    this.node.parent.getChildByName("Bg").getComponent(AudioSource).play();
     this.node.parent.getChildByName("Bg").getComponent(MainScript).playAnimation();
     this.node.destroy();
   }
