@@ -1,4 +1,4 @@
-import { _decorator, AudioSource, Component, instantiate, Node, Prefab } from "cc";
+import { _decorator, Animation, AudioSource, Component, instantiate, Node, Prefab } from "cc";
 import { Singleton } from "./Singleton";
 const { ccclass, property } = _decorator;
 
@@ -28,6 +28,11 @@ export class MainScript extends Component {
       event.target.getComponent(AudioSource).play();
       event.target.getComponent(AudioSource).loop = true;
     } else {
+      if (event.target.name == "1") {
+        console.log("1", event.target.getComponent(Animation));
+
+        event.target.getComponent(Animation).play("check");
+      }
       Singleton.getInstance().Target = event.target.name;
       this.node.getComponent(AudioSource).volume = 0.1;
       // this.labelMonkey.active = false;

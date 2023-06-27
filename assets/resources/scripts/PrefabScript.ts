@@ -52,12 +52,6 @@ export class PrefabScript extends Component {
   }
   settingSprites(index: number, text?: string) {
     this.animal.getComponent(Sprite).spriteFrame = this.spritesMain[index - 1];
-    // if (index == 4) {
-    //   this.animal.setScale(0.75, 0.75);
-    //   //   this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index];
-    // } else if (index == 8) {
-    //   this.animal.setScale(1.3, 1.3);
-    // }
     console.log(this.numbr);
 
     this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index - 1];
