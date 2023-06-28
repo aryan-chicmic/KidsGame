@@ -69,6 +69,7 @@ export class PrefabScript extends Component {
   }
 
   onCloseClick() {
+    this.node.parent.getChildByName("Bg").resumeSystemEvents(true);
     this.node.parent.getChildByName("Bg").getComponent(AudioSource).play();
     this.node.parent.getChildByName("Bg").getComponent(MainScript).playAnimation();
     this.node.destroy();
