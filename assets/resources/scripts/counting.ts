@@ -3,6 +3,7 @@ import {
   Animation,
   AudioClip,
   AudioSource,
+  BlockInputEvents,
   Canvas,
   Component,
   find,
@@ -37,15 +38,11 @@ export class counting extends Component {
   @property({ type: Node })
   Canvas: Node = null;
   onClick(event) {
+    this.node.pauseSystemEvents(true);
     singleton.getInstance().Target = event.target.name;
     this.node.getComponent(AudioSource).volume = 0.3;
-    // this.labelMonkey.active = false;
     this.labelMonkey.getComponent(Animation).play("exit");
-    console.log(event.target._name);
-
     event.target.getComponent(AudioSource).clip = this.audios[`${event.target.name}`];
-    console.log(event.target.getComponent(AudioSource).clip);
-
     event.target.getComponent(AudioSource).play();
     setTimeout(() => {
       const prefabInstance = instantiate(this.DescriptionPrefab);

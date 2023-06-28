@@ -29,48 +29,21 @@ export class PrefabScript extends Component {
     this.animateCracker();
   }
   targetChecker() {
-    console.log(typeof singleton.getInstance().Target);
+    const target = singleton.getInstance().Target;
+    const labelLookup = {
+      "1": `${target} ANIMAL`,
+      "0": "It means NULL(NOTHING)",
+    };
 
-    switch (singleton.getInstance().Target) {
-      case "1":
-        this.settingSprites(1, "1 ANIMAL");
-        break;
-      case "2":
-        this.settingSprites(2, "2 ANIMALS");
-        break;
-      case "3":
-        this.settingSprites(3, "3 ANIMALS");
-        break;
-      case "4":
-        this.settingSprites(4, "4 ANIMALS");
-        break;
-      case "5":
-        this.settingSprites(5, "5 ANIMALS");
-        break;
-      case "6":
-        this.settingSprites(6, "6 ANIMALS");
-        break;
-      case "7":
-        this.settingSprites(7, "7 ANIMALS");
-        break;
-      case "8":
-        this.settingSprites(8, "8 ANIMALS");
-        break;
-      case "9":
-        this.settingSprites(9, "9 ANIMALS");
-        break;
-      case "0":
-        this.settingSprites(0, "It means NULL(NOTHING)");
-        break;
-    }
+    const label = labelLookup[target] || `${target} ANIMALS`;
+    this.settingSprites(parseInt(target), label);
   }
   settingSprites(index: number, text?: string) {
     this.animal.getComponent(Sprite).spriteFrame = this.spritesMain[index];
-    if (index == 4) {
-      this.animal.setScale(0.75, 0.75);
-      //   this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index];
-    } else if (index == 8) {
+    if (index == 8) {
       this.animal.setScale(1.3, 1.3);
+    } else {
+      this.animal.setScale(0.5, 0.5);
     }
 
     this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index];
@@ -99,7 +72,7 @@ export class PrefabScript extends Component {
     this.node.parent.getComponent(AudioSource).play();
     this.node.parent.getChildByName("LabelBoard").getComponent(Animation).play("entry");
     console.log(this.node.parent);
-
+    this.node.parent.resumeSystemEvents(true);
     this.node.destroy();
   }
 }
