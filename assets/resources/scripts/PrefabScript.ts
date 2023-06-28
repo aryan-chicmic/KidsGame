@@ -27,33 +27,15 @@ export class PrefabScript extends Component {
     this.animateCracker();
   }
   targetChecker() {
-    console.log(Singleton.getInstance().Target);
-
-    switch (Singleton.getInstance().Target) {
-      case "1":
-        this.settingSprites(1, "1 FRUIT");
-        break;
-      case "2":
-        this.settingSprites(2, "2 FRUITS");
-        break;
-      case "3":
-        this.settingSprites(3, "3 FRUITS");
-        break;
-      case "4":
-        this.settingSprites(4, "4 FRUITS");
-        break;
-      case "5":
-        this.settingSprites(5, "5 FRUITS");
-        break;
-      case "6":
-        this.settingSprites(6, "6 FRUITS");
-        break;
-    }
+    const target = Singleton.getInstance().Target;
+    const labelLookup = {
+      "1": `${target} FRUIT`,
+    };
+    const label = labelLookup[target] || `${target} FRUITS`;
+    this.settingSprites(parseInt(target), label);
   }
   settingSprites(index: number, text?: string) {
     this.animal.getComponent(Sprite).spriteFrame = this.spritesMain[index - 1];
-    console.log(this.numbr);
-
     this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index - 1];
     this.text.getComponent(Label).string = text;
   }
@@ -77,10 +59,8 @@ export class PrefabScript extends Component {
   }
   update(deltaTime: number) {}
   onCloseClick() {
+    this.node.parent.resumeSystemEvents(true);
     this.node.parent.getComponent(AudioSource).play();
-    // this.node.parent.getChildByName("LabelBoard").getComponent(Animation).play("entry");
-    console.log(this.node.parent);
-
     this.node.destroy();
   }
 }

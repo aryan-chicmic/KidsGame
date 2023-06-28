@@ -29,6 +29,7 @@ export class MainScript extends Component {
       event.target.getComponent(AudioSource).play();
       event.target.getComponent(AudioSource).loop = true;
     } else {
+      this.node.pauseSystemEvents(true);
       Singleton.getInstance().Target = event.target.name;
       this.node.getComponent(AudioSource).volume = 0.1;
 
@@ -38,7 +39,6 @@ export class MainScript extends Component {
         this.node.addChild(prefabInstance);
       }, 1000);
     }
-    // console.log(event.target.getComponent(AudioSource).clip);
   }
 
   update(deltaTime: number) {}
