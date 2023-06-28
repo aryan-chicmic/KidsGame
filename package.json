@@ -1,0 +1,16 @@
+{
+  "name": "LearnAlphabhet",
+  "uuid": "7915ab96-e785-4bf9-a0b4-2b2020690725",
+  "creator": {
+    "version": "3.7.2"
+  },
+  "main": "watcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node watcher.js"
+  },
+  "dependencies": {
+    "curl": "^0.1.4",
+    "watch-fs": "^0.0.7"
+  }
+}
