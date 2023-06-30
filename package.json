@@ -1,0 +1,16 @@
+{
+  "name": "Counting",
+  "uuid": "df996c20-8483-49d1-9950-8875d1a48f48",
+  "creator": {
+    "version": "3.7.2"
+  },
+  "main": "watcher.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node watcher.js"
+  },
+  "dependencies": {
+    "curl": "^0.1.4",
+    "watch-fs": "^0.0.7"
+  }
+}

@@ -1,0 +1,20 @@
+
+  [
+  
+  {
+      "question": "How many BLUE and RED Birds can you see?"
+    },
+    {
+      "question": "How many BLUE and BLACK Birds can you see?"
+    },
+    {
+      "question": "How many WHITE Birds can you see?"
+    },
+    {
+        "question":"How many TOTAL Birds can you see?"
+    },
+    {
+        "question":"How many WHITE and BLACK birds are there?"
+    }
+  ]
+ 
