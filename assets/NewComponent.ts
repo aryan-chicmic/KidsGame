@@ -20,6 +20,10 @@ export class NewComponent extends Component {
   questionaire: JsonAsset = null;
   @property({ type: Label })
   label: Label = null;
+  @property({ type: Prefab })
+  buttonPrefab: Prefab = null;
+  @property({ type: Node })
+  buttonNode: Node = null;
   iconObject: SpriteFrame[] = [];
   maxIcons: number = 9;
   minIcons: number = 1;
@@ -61,16 +65,28 @@ export class NewComponent extends Component {
       }
     });
     console.log("Total", this.total);
+    for (let i = 0; i < 4; i++) {
+      console.log(i);
+
+      let mcqButton = instantiate(this.buttonPrefab);
+      this.buttonNode.addChild(mcqButton);
+    }
+    let currectButton = randomRangeInt(1, 9) % this.buttonNode.children.length;
+    this.buttonNode.children[currectButton].getChildByName("Label").getComponent(Label).string = `${this.total}`;
+    for (let i = 0; i < this.buttonNode.children.length; i++) {
+      if (i !== currectButton) {
+        const randomNumber = Math.floor(Math.random() * 10);
+        this.buttonNode.children[i].getChildByName("Label").getComponent(Label).string = randomNumber.toString();
+      }
+    }
   }
   onEditBoxValueChanged(event) {
-
     let inputValue = parseInt(this.editbox.string);
     if (inputValue == this.total) {
       console.log("hurray you answered correctly");
     } else {
       console.log("Plz try again");
     }
-
   }
 
   update(deltaTime: number) {}
