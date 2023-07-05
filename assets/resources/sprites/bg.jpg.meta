@@ -11,7 +11,7 @@
     "6c48a": {
       "importer": "texture",
       "uuid": "9887872e-130a-47a4-9adb-d9254690b5ab@6c48a",
-      "displayName": "What-Is-black-trick-question-for-kids",
+      "displayName": "bg",
       "id": "6c48a",
       "name": "texture",
       "userData": {
@@ -35,7 +35,7 @@
     "f9941": {
       "importer": "sprite-frame",
       "uuid": "9887872e-130a-47a4-9adb-d9254690b5ab@f9941",
-      "displayName": "What-Is-black-trick-question-for-kids",
+      "displayName": "bg",
       "id": "f9941",
       "name": "spriteFrame",
       "userData": {
@@ -46,10 +46,10 @@
         "offsetY": 0,
         "trimX": 0,
         "trimY": 0,
-        "width": 1920,
-        "height": 1080,
-        "rawWidth": 1920,
-        "rawHeight": 1080,
+        "width": 1500,
+        "height": 844,
+        "rawWidth": 1500,
+        "rawHeight": 844,
         "borderTop": 0,
         "borderBottom": 0,
         "borderLeft": 0,
@@ -61,17 +61,17 @@
         "meshType": 0,
         "vertices": {
           "rawPosition": [
-            -960,
-            -540,
+            -750,
+            -422,
             0,
-            960,
-            -540,
+            750,
+            -422,
             0,
-            -960,
-            540,
+            -750,
+            422,
             0,
-            960,
-            540,
+            750,
+            422,
             0
           ],
           "indexes": [
@@ -84,12 +84,12 @@
           ],
           "uv": [
             0,
-            1080,
-            1920,
-            1080,
+            844,
+            1500,
+            844,
             0,
             0,
-            1920,
+            1500,
             0
           ],
           "nuv": [
@@ -103,13 +103,13 @@
             1
           ],
           "minPos": [
-            -960,
-            -540,
+            -750,
+            -422,
             0
           ],
           "maxPos": [
-            960,
-            540,
+            750,
+            422,
             0
           ]
         },

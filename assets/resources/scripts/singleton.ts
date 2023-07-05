@@ -9,6 +9,7 @@ export class singleton extends Component {
   static emptyArrays;
   parentArray: any[] = [];
   initalArray() {
+    singleton.emptyArrays = [];
     singleton.emptyArrays = Array.from({ length: this.iconObject.length }, () => []);
   }
   IconObject(): any {
@@ -22,24 +23,18 @@ export class singleton extends Component {
     return singleton.instance;
   }
   arrayMaker(index: number, sprite: SpriteFrame = null) {
-    // if (sprite) this.ParentColumnArray[index].push(node);
-    console.log(singleton.emptyArrays[index], index);
-
     singleton.emptyArrays[index].push(sprite);
-
-    console.log("after pushing", singleton.emptyArrays);
   }
   update(deltaTime: number) {}
   loadIcons() {
     return new Promise<void>((resolve, reject) => {
-      resources.loadDir("icons", SpriteFrame, (err, assets) => {
+      resources.loadDir("sprites/icons", SpriteFrame, (err, assets) => {
         if (err) {
           reject(err);
           return;
         }
-
+        this.iconObject = [];
         this.iconObject = assets;
-        // console.log(this.iconObject);
         this.initalArray();
         resolve();
       });
