@@ -1,5 +1,26 @@
-import { _decorator, Button, Component, EditBox, instantiate, JsonAsset, Label, Node, Prefab, randomRangeInt, resources, Sprite, SpriteFrame, SystemEvent, UITransform, Vec3 } from "cc";
+import {
+  _decorator,
+  Button,
+  Component,
+  Animation,
+  EditBox,
+  instantiate,
+  JsonAsset,
+  Label,
+  Node,
+  Prefab,
+  randomRangeInt,
+  resources,
+  Sprite,
+  SpriteFrame,
+  SystemEvent,
+  UITransform,
+  Vec3,
+  Canvas,
+  game,
+} from "cc";
 import { singleton } from "./singleton";
+import { popUp } from "./popUp";
 
 const { ccclass, property } = _decorator;
 enum ICONTYPE {
@@ -28,6 +49,12 @@ export class MainScript extends Component {
   minIcons: number = 1;
   @property({ type: Node })
   bg: Node = null;
+  @property({ type: Node })
+  monkeyNode: Node = null;
+  @property({ type: Node })
+  Canvas: Node = null;
+  @property({ type: Prefab })
+  popUp: Prefab = null;
   total = 0;
   start() {
     this.gameLoader();
@@ -88,7 +115,7 @@ export class MainScript extends Component {
         }
       }
     });
-
+    this.monkeyNode.getComponent(Animation).play("monkeyenter");
     this.mcqButtonGeneration();
   }
   mcqButtonGeneration() {
@@ -109,12 +136,13 @@ export class MainScript extends Component {
     }
   }
   clicked(button: Button) {
-    if (button.node.getChildByName("Label").getComponent(Label).string == `${this.total}`) {
-      console.log("Correct Answer");
-      this.gameLoader();
-    } else {
-      console.log("OPPS WRONG ANSWER,correct answer is :", this.total);
-    }
+    const labelComponent = button.node.getChildByName("Label").getComponent(Label);
+    const isCorrectAnswer = labelComponent.string === `${this.total}`;
+    this.node.parent.pauseSystemEvents(true);
+    const popup = instantiate(this.popUp);
+    this.Canvas.addChild(popup);
+    popup.getComponent(popUp).settingHeading(isCorrectAnswer, this.gameLoader, this);
   }
+
   update(deltaTime: number) {}
 }
