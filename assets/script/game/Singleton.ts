@@ -5,6 +5,8 @@ const { ccclass, property } = _decorator;
 export class Singleton extends Component {
     private static instance: Singleton | null = null;
     private iconObject: SpriteFrame[] = [];
+    private mainScriptRef;
+    private check: Boolean = false;
     private singleton() {}
     start() {}
     static getInstance(): Singleton {
@@ -13,6 +15,13 @@ export class Singleton extends Component {
         }
         return Singleton.instance;
     }
+    get MainScriptRef(): any {
+        return this.mainScriptRef;
+    }
+    set MainScriptRef(value: any) {
+        this.mainScriptRef = value;
+    }
+
     IconObject(): any {
         return this.iconObject;
     }

@@ -12,10 +12,14 @@ import {
     Label,
 } from "cc";
 import { Singleton } from "./Singleton";
+import { NUMBER_MAPPING, SYMBOL_NAMES } from "../constants/Constant";
+import PopupBase from "../../components/popup/PopupBase";
+import { PopupManager } from "../managers/PopupManager";
+import { POPUPS } from "../constants/Popup";
 const { ccclass, property } = _decorator;
 
 @ccclass("MainScript")
-export class MainScript extends Component {
+export class MainScript extends PopupBase {
     @property({ type: Prefab })
     iconPrefab: Prefab | null = null;
     @property({ type: Node })
@@ -37,9 +41,15 @@ export class MainScript extends Component {
     generatedNumber2: string = "";
     result: number = 0;
     start() {
+        Singleton.getInstance().MainScriptRef = this;
         this.spriteLoading();
     }
     spriteLoading() {
+        this.mcqButtonHolder?.removeAllChildren();
+        this.number1?.removeAllChildren();
+        this.number2?.removeAllChildren();
+        this.symbol?.removeAllChildren();
+
         Singleton.getInstance()
             .loadIcons()
             .then(() => {
@@ -70,9 +80,6 @@ export class MainScript extends Component {
                 this.calculation();
             })
             .then(() => {
-                console.log(this.result);
-            })
-            .then(() => {
                 this.mcqButtonGeneration();
             });
     }
@@ -82,52 +89,73 @@ export class MainScript extends Component {
         randNumber: number,
         prefab: Prefab | null
     ) => {
-        if (parent) {
-            const node: Node = <Node>(<unknown>instantiate(prefab));
-            const spriteComponent: Sprite = <Sprite>node.getComponent(Sprite);
+        if (parent && prefab) {
+            const node: Node = instantiate(prefab) as Node;
+            const spriteComponent: Sprite = node.getComponent(Sprite)!;
 
-            if (parent.name == "Symbol") {
-                spriteComponent.spriteFrame = this.symbols[randNumber];
-                this.symbolCheck = spriteComponent.spriteFrame.name;
-                console.log(spriteComponent.spriteFrame.name, this.symbolCheck);
-            } else if (parent.name == "Number1") {
-                spriteComponent.spriteFrame = this.icons[randNumber];
-                this.generatedNumber1 = spriteComponent.spriteFrame.name;
-                console.log(spriteComponent.spriteFrame, this.generatedNumber1);
-            } else if (parent.name == "Number2") {
-                spriteComponent.spriteFrame = this.icons[randNumber];
-                this.generatedNumber2 = spriteComponent.spriteFrame.name;
-                console.log(spriteComponent.spriteFrame, this.generatedNumber2);
+            switch (parent.name) {
+                case "Symbol":
+                    spriteComponent.spriteFrame = this.symbols[randNumber];
+                    this.symbolCheck = Object.keys(SYMBOL_NAMES)[randNumber];
+                    console.log(this.symbolCheck);
+                    // node.setScale(1.5, 1.5);
+
+                    break;
+                case "Number1":
+                    spriteComponent.spriteFrame = this.icons[randNumber];
+                    this.generatedNumber1 =
+                        Object.keys(NUMBER_MAPPING)[randNumber];
+                    node.setScale(1.5, 1.5);
+                    console.log(this.generatedNumber1);
+
+                    break;
+                case "Number2":
+                    spriteComponent.spriteFrame = this.icons[randNumber];
+                    this.generatedNumber2 =
+                        Object.keys(NUMBER_MAPPING)[randNumber];
+                    node.setScale(1.2, 1.2);
+                    console.log(this.generatedNumber2);
+                    break;
+                default:
+                    break;
             }
+
             parent.addChild(node);
         }
     };
+
     calculation() {
         switch (this.symbolCheck) {
-            case "divide":
-                this.result =
-                    parseInt(this.generatedNumber1) /
-                    parseInt(this.generatedNumber2);
+            case "DIVIDE":
+                this.result = parseFloat(
+                    (
+                        parseInt(this.generatedNumber1) /
+                        parseInt(this.generatedNumber2)
+                    ).toFixed(2)
+                );
+
                 break;
-            case "subtract":
+            case "SUBTRACT":
                 this.result =
                     parseInt(this.generatedNumber1) -
                     parseInt(this.generatedNumber2);
                 break;
-            case "multiplication":
+            case "MULTIPLICATION":
                 this.result =
                     parseInt(this.generatedNumber1) *
                     parseInt(this.generatedNumber2);
                 break;
-            case "plus":
+            case "PLUS":
                 this.result =
                     parseInt(this.generatedNumber1) +
                     parseInt(this.generatedNumber2);
                 break;
         }
+        console.log(this.result);
     }
     mcqButtonGeneration() {
         let usedNumbers = new Set<number>();
+        let correctButton: number = randomRangeInt(0, 9) % 4;
         for (let i = 0; i < 4; i++) {
             let mcqButton: Node = <Node>(
                 (<unknown>instantiate(this.buttonPrefab))
@@ -135,21 +163,21 @@ export class MainScript extends Component {
             mcqButton.on(Button.EventType.CLICK, this.clicked, this);
             this.mcqButtonHolder?.addChild(mcqButton);
 
-            let correctButton: number = randomRangeInt(0, 9) % 4;
             let btnNode = mcqButton?.getChildByName("Label");
             let btnNodeComponent: Label | null | undefined =
                 btnNode?.getComponent(Label);
 
             if (i != correctButton) {
                 const randomNumber = this.randomUniqueNum(
-                    9,
-                    correctButton,
+                    100,
+                    this.result,
                     usedNumbers
                 );
-                if (btnNodeComponent)
-                    btnNodeComponent.string = `${randomNumber}`;
+                btnNodeComponent &&
+                    (btnNodeComponent.string = `${randomNumber}`);
             } else {
-                btnNodeComponent!.string = "4";
+                btnNodeComponent &&
+                    (btnNodeComponent.string = `${this.result}`);
             }
         }
     }
@@ -166,14 +194,15 @@ export class MainScript extends Component {
         return result;
     }
     clicked(button: Button) {
-        // const labelComponent = button.node
-        //     .getChildByName("Label")
-        //     .getComponent(Label);
-        // const isCorrectAnswer = labelComponent.string === `${this.total}`;
-        // this.node.parent.pauseSystemEvents(true);
-        // const popup = instantiate(this.popUp);
-        // this.Canvas.addChild(popup);
-        // popup.getComponent(popUp).settingHeading(isCorrectAnswer, this);
+        const labelChild = button?.node.getChildByName("Label");
+        const labelComponent = labelChild?.getComponent(Label);
+        if (labelComponent?.string == `${this.result}`) {
+            PopupManager.show(POPUPS.RESULTANT, true);
+            
+        } else {
+            console.log("false");
+            PopupManager.show(POPUPS.RESULTANT, false);
+        }
     }
     update(deltaTime: number) {}
 }

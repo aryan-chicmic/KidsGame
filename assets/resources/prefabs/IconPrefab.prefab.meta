@@ -2,12 +2,12 @@
   "ver": "1.1.43",
   "importer": "prefab",
   "imported": true,
-  "uuid": "3d4f32ec-1b68-40ea-bbc5-21340ae43711",
+  "uuid": "6ea1329c-0798-4d8a-9d67-c457aa12f584",
   "files": [
     ".json"
   ],
   "subMetas": {},
   "userData": {
-    "syncNodeName": "number"
+    "syncNodeName": "IconPrefab"
   }
 }

@@ -15,6 +15,7 @@ import {
 const { ccclass } = _decorator;
 import PopupBase from "../../components/popup/PopupBase";
 import { ASSET_CACHE_MODE, PopupParams, PopupStruct } from "../constants/Popup";
+// import PopupBase from "assets/components/popup/PopupBase";
 /**
  * Pop -up cache mode
  */

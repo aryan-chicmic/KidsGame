@@ -36,12 +36,12 @@ export const POPUPS: Record<string, PopupStruct> = {
             immediately: false,
         },
     },
-    TEST1: {
-        path: "prefabs/settingsPopup-3",
+    RESULTANT: {
+        path: "prefabs/resultant",
         params: {
             mode: ASSET_CACHE_MODE.Frequent,
             priority: POPUP_PRIORITY.HIGH,
-            immediately: true,
+            immediately: false,
         },
     },
     TEST2: {

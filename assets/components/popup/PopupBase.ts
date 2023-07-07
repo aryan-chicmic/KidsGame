@@ -52,7 +52,6 @@ export default class PopupBase<Options = any> extends Component {
         this.onAfterShow && this.onAfterShow();
     }
 
-   
     /**
      * Play Hide Aniamtion of popup
      * @param duration
