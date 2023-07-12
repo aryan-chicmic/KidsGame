@@ -40,6 +40,7 @@ export class MainScript extends PopupBase {
     generatedNumber1: string = "";
     generatedNumber2: string = "";
     result: number = 0;
+    protected onLoad(): void {}
     start() {
         Singleton.getInstance().MainScriptRef = this;
         this.spriteLoading();
@@ -89,31 +90,48 @@ export class MainScript extends PopupBase {
         randNumber: number,
         prefab: Prefab | null
     ) => {
+        console.log(randNumber);
+
         if (parent && prefab) {
             const node: Node = instantiate(prefab) as Node;
-            const spriteComponent: Sprite = node.getComponent(Sprite)!;
+            const spriteComponent: Sprite | null = node.getComponent(Sprite);
 
             switch (parent.name) {
                 case "Symbol":
-                    spriteComponent.spriteFrame = this.symbols[randNumber];
+                    let randSymbol = this.symbols[randNumber];
+                    spriteComponent &&
+                        (spriteComponent.spriteFrame = randSymbol);
+
                     this.symbolCheck = Object.keys(SYMBOL_NAMES)[randNumber];
                     console.log(this.symbolCheck);
                     // node.setScale(1.5, 1.5);
 
                     break;
                 case "Number1":
-                    spriteComponent.spriteFrame = this.icons[randNumber];
+                    let randnumber1 = this.icons[randNumber];
+                    spriteComponent &&
+                        (spriteComponent.spriteFrame = randnumber1);
+
+                    // let y = Object.keys(NUMBER_MAPPING)[randnumber1.name];
+
                     this.generatedNumber1 =
-                        Object.keys(NUMBER_MAPPING)[randNumber];
-                    node.setScale(1.5, 1.5);
+                        Object.keys(NUMBER_MAPPING)[randnumber1.name];
+                    // Object.keys(NUMBER_MAPPING)[randNumber];
+                    node.setScale(1.4, 1.4);
                     console.log(this.generatedNumber1);
 
                     break;
                 case "Number2":
-                    spriteComponent.spriteFrame = this.icons[randNumber];
+                    let randnumber2 = this.icons[randNumber];
+                    spriteComponent &&
+                        (spriteComponent.spriteFrame = randnumber2);
+
+                    // let x = Object.keys(NUMBER_MAPPING)[randnumber2.name];
+
                     this.generatedNumber2 =
-                        Object.keys(NUMBER_MAPPING)[randNumber];
-                    node.setScale(1.2, 1.2);
+                        Object.keys(NUMBER_MAPPING)[randnumber2.name];
+                    // Object.keys(NUMBER_MAPPING)[randNumber];
+                    node.setScale(1.4, 1.4);
                     console.log(this.generatedNumber2);
                     break;
                 default:
@@ -161,6 +179,7 @@ export class MainScript extends PopupBase {
                 (<unknown>instantiate(this.buttonPrefab))
             );
             mcqButton.on(Button.EventType.CLICK, this.clicked, this);
+
             this.mcqButtonHolder?.addChild(mcqButton);
 
             let btnNode = mcqButton?.getChildByName("Label");
@@ -194,13 +213,14 @@ export class MainScript extends PopupBase {
         return result;
     }
     clicked(button: Button) {
+        console.log(this.node);
+        this.mcqButtonHolder?.pauseSystemEvents(true);
+
         const labelChild = button?.node.getChildByName("Label");
         const labelComponent = labelChild?.getComponent(Label);
         if (labelComponent?.string == `${this.result}`) {
             PopupManager.show(POPUPS.RESULTANT, true);
-            
         } else {
-            console.log("false");
             PopupManager.show(POPUPS.RESULTANT, false);
         }
     }

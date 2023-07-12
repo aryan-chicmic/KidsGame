@@ -8,6 +8,8 @@ import {
     AudioClip,
     AudioSource,
     game,
+    Vec3,
+    tween,
 } from "cc";
 import { PopupManager } from "../../script/managers/PopupManager";
 import { POPUPS } from "../../script/constants/Popup";
@@ -37,10 +39,17 @@ export class Popup extends PopupBase {
     @property(Node)
     protected quitButton: Node | null = null;
 
+    @property(Node)
+    protected cracker: Node | null = null;
+
+    @property(Node)
+    protected cracker1: Node | null = null;
+
     @property({ type: AudioClip })
     popUpSounds: AudioClip[] | null = [];
     protected newFlag: string | null = null;
     check: Boolean = false;
+    audioSource: AudioSource | null = null;
     /** Pop -up path */
     public static get path() {
         return "prefabs/settingsPopup";
@@ -57,10 +66,32 @@ export class Popup extends PopupBase {
     protected registerEvent() {}
 
     protected unregisterEvent() {}
-    updateData() {
-        console.log("Hello world");
-    }
+    updateData() {}
+    animateCracker() {
+        console.log("in animate function");
 
+        const crackScale = 1;
+        const duration = 2;
+        const onCompleteCallback = () => {
+            console.log("in comblete callback");
+            this.cracker?.setScale(0, 0);
+            this.cracker1?.setScale(0, 0);
+        };
+
+        const animateNode = (node) => {
+            console.log("in animateNode", node);
+
+            tween(node)
+                .to(
+                    duration,
+                    { scale: new Vec3(crackScale, crackScale, 0) },
+                    { easing: "sineOut", onComplete: onCompleteCallback }
+                )
+                .start();
+        };
+        animateNode(this.cracker);
+        animateNode(this.cracker1);
+    }
     protected updateDisplay(options: string) {
         this.check = Boolean(options);
         this.curFlagLabel &&
@@ -68,19 +99,24 @@ export class Popup extends PopupBase {
                 ? "CONGRATULATIONS"
                 : "WRONG ANSWER");
 
-        const audioSource = this.node.getComponent(AudioSource);
+        this.audioSource = this.node.getComponent(AudioSource);
+        console.log("Node", this.node);
+
         if (this.check) {
+            console.log("in check");
+
+            this.animateCracker();
             this.curFlagLabel?.getComponent(Animation)?.play("congratsLabel");
-            this.audioPlaying(audioSource, 0);
+            this.audioPlaying(this.audioSource, 0);
             setTimeout(() => {
-                this.audioPlaying(audioSource, 1);
-            }, 1500);
+                this.audioPlaying(this.audioSource, 1);
+            }, 500);
         } else {
             this.curFlagLabel?.getComponent(Animation)?.play("wrong");
-            this.audioPlaying(audioSource, 2);
+            this.audioPlaying(this.audioSource, 2);
             setTimeout(() => {
-                this.audioPlaying(audioSource, 3);
-            }, 1500);
+                this.audioPlaying(this.audioSource, 3);
+            }, 500);
         }
         const labelChild = this.normalBtn?.getChildByName("Label");
         const labelComponent = labelChild?.getComponent(Label);
@@ -94,9 +130,11 @@ export class Popup extends PopupBase {
         Singleton.getInstance().MainScriptRef.getComponent(
             AudioSource
         ).volume = 0.05;
+        console.log("Node in audio", this.node);
+
         if (this.popUpSounds) {
             audioSource && (audioSource.clip = this.popUpSounds[soundIndex]);
-            audioSource && (audioSource.volume = 0.7);
+            audioSource && (audioSource.volume = 1);
             audioSource && audioSource.play();
         }
     }
@@ -109,7 +147,9 @@ export class Popup extends PopupBase {
         this.hide();
     }
 
-    protected onNormalBtnClick() {
+    protected onNormalBtnClick() {      
+        console.log("afteer click", this.node);
+        this.audioSource?.pause();
         Singleton.getInstance().MainScriptRef.getComponent(
             AudioSource
         ).volume = 1;
@@ -120,7 +160,6 @@ export class Popup extends PopupBase {
         } else {
             PopupManager.hide();
         }
-        this.updateFlag();
     }
 
     protected onPriorityBtnClick() {
