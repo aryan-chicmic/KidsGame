@@ -16,6 +16,7 @@ import { POPUPS } from "../../script/constants/Popup";
 import PopupBase from "./PopupBase";
 import { MainScript } from "../../script/game/MainScript";
 import { Singleton } from "../../script/game/Singleton";
+import { MessageCenter } from "../../script/managers/MessageCenter";
 
 const { ccclass, property } = _decorator;
 
@@ -67,20 +68,19 @@ export class Popup extends PopupBase {
 
     protected unregisterEvent() {}
     updateData() {}
-    animateCracker() {
-        console.log("in animate function");
 
+    /**
+     * @description cracker animation
+     */
+    animateCracker() {
         const crackScale = 1;
         const duration = 2;
         const onCompleteCallback = () => {
-            console.log("in comblete callback");
             this.cracker?.setScale(0, 0);
             this.cracker1?.setScale(0, 0);
         };
 
         const animateNode = (node) => {
-            console.log("in animateNode", node);
-
             tween(node)
                 .to(
                     duration,
@@ -92,6 +92,11 @@ export class Popup extends PopupBase {
         animateNode(this.cracker);
         animateNode(this.cracker1);
     }
+
+    /**
+     * @description basically it is updating values of pop up
+     * @param options
+     */
     protected updateDisplay(options: string) {
         this.check = Boolean(options);
         this.curFlagLabel &&
@@ -100,7 +105,6 @@ export class Popup extends PopupBase {
                 : "WRONG ANSWER");
 
         this.audioSource = this.node.getComponent(AudioSource);
-        console.log("Node", this.node);
 
         if (this.check) {
             console.log("in check");
@@ -123,6 +127,12 @@ export class Popup extends PopupBase {
         labelComponent &&
             (labelComponent.string = options ? "NEXT" : "TRY AGAIN");
     }
+
+    /**
+     * @description it is playing audio according to the result
+     * @param audioSource
+     * @param soundIndex
+     */
     protected audioPlaying(
         audioSource: AudioSource | null,
         soundIndex: number
@@ -130,7 +140,6 @@ export class Popup extends PopupBase {
         Singleton.getInstance().MainScriptRef.getComponent(
             AudioSource
         ).volume = 0.05;
-        console.log("Node in audio", this.node);
 
         if (this.popUpSounds) {
             audioSource && (audioSource.clip = this.popUpSounds[soundIndex]);
@@ -147,8 +156,11 @@ export class Popup extends PopupBase {
         this.hide();
     }
 
-    protected onNormalBtnClick() {      
-        console.log("afteer click", this.node);
+    /**
+     * @description this function is called on button click of pop up : TryAgain or Next
+     */
+    protected onNormalBtnClick() {
+        MessageCenter.getInstance().send("check");
         this.audioSource?.pause();
         Singleton.getInstance().MainScriptRef.getComponent(
             AudioSource

@@ -6,7 +6,6 @@ export class Singleton extends Component {
     private static instance: Singleton | null = null;
     private iconObject: SpriteFrame[] = [];
     private mainScriptRef;
-    private check: Boolean = false;
     private singleton() {}
     start() {}
     static getInstance(): Singleton {
@@ -25,6 +24,10 @@ export class Singleton extends Component {
     IconObject(): any {
         return this.iconObject;
     }
+    /**
+     * @description loading all the sprites
+     * @returns
+     */
     loadIcons() {
         return new Promise<void>((resolve, reject) => {
             resources.loadDir(

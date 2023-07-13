@@ -16,6 +16,7 @@ import { NUMBER_MAPPING, SYMBOL_NAMES } from "../constants/Constant";
 import PopupBase from "../../components/popup/PopupBase";
 import { PopupManager } from "../managers/PopupManager";
 import { POPUPS } from "../constants/Popup";
+import { MessageCenter } from "../managers/MessageCenter";
 const { ccclass, property } = _decorator;
 
 @ccclass("MainScript")
@@ -36,15 +37,25 @@ export class MainScript extends PopupBase {
     @property({ type: Node })
     mcqButtonHolder: Node | null = null;
 
+    //Global Variable
+    totalMCQButtons: number = 4;
     symbolCheck: string = "";
     generatedNumber1: string = "";
     generatedNumber2: string = "";
     result: number = 0;
     protected onLoad(): void {}
     start() {
+        MessageCenter.getInstance().register(
+            "check",
+            this.resumeButtonEvents.bind(this),
+            this.node
+        );
         Singleton.getInstance().MainScriptRef = this;
         this.spriteLoading();
     }
+    /**
+     * @description loading sprites by calling function from singleton,calling calculations of results function and then calling generating mcq buttons func
+     */
     spriteLoading() {
         this.mcqButtonHolder?.removeAllChildren();
         this.number1?.removeAllChildren();
@@ -85,6 +96,12 @@ export class MainScript extends PopupBase {
             });
     }
 
+    /**
+     * @description instantiate the prefab and checks whther it is a type symbol or number and then assign sprite to it accordingly
+     * @param parent  node to which symbol or number needs to be child of
+     * @param randNumber randomly generated number for selecting sprite randomly
+     * @param prefab prefab which needs to be instantiated
+     */
     createAndAddNode = (
         parent: Node | null,
         randNumber: number,
@@ -142,6 +159,9 @@ export class MainScript extends PopupBase {
         }
     };
 
+    /**
+     * @description calculating results according to the numbers generated
+     */
     calculation() {
         switch (this.symbolCheck) {
             case "DIVIDE":
@@ -171,10 +191,14 @@ export class MainScript extends PopupBase {
         }
         console.log(this.result);
     }
+
+    /**
+     * @description mcq button generation with random unique numbers
+     */
     mcqButtonGeneration() {
         let usedNumbers = new Set<number>();
         let correctButton: number = randomRangeInt(0, 9) % 4;
-        for (let i = 0; i < 4; i++) {
+        for (let i = 0; i < this.totalMCQButtons; i++) {
             let mcqButton: Node = <Node>(
                 (<unknown>instantiate(this.buttonPrefab))
             );
@@ -200,6 +224,14 @@ export class MainScript extends PopupBase {
             }
         }
     }
+
+    /**
+     * @description it generates random unique numbers
+     * @param range
+     * @param exclude  number which we have choosen as result and wanted to exclude
+     * @param usedNumbers already used numbers
+     * @returns
+     */
     randomUniqueNum(
         range: number,
         exclude: number,
@@ -212,10 +244,20 @@ export class MainScript extends PopupBase {
         usedNumbers.add(result);
         return result;
     }
-    clicked(button: Button) {
-        console.log(this.node);
-        this.mcqButtonHolder?.pauseSystemEvents(true);
 
+    /**
+     * @description it resumes the system events of mcq button holder
+     */
+    resumeButtonEvents() {
+        this.mcqButtonHolder?.resumeSystemEvents(true);
+    }
+
+    /**
+     * @description click function of mcq button
+     * @param button
+     */
+    clicked(button: Button) {
+        this.mcqButtonHolder?.pauseSystemEvents(true);
         const labelChild = button?.node.getChildByName("Label");
         const labelComponent = labelChild?.getComponent(Label);
         if (labelComponent?.string == `${this.result}`) {
