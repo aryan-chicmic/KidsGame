@@ -46,7 +46,7 @@ export class MainScript extends PopupBase {
     protected onLoad(): void {}
     start() {
         MessageCenter.getInstance().register(
-            "check",
+            "resumeSystemEvents",
             this.resumeButtonEvents.bind(this),
             this.node
         );
@@ -56,46 +56,30 @@ export class MainScript extends PopupBase {
     /**
      * @description loading sprites by calling function from singleton,calling calculations of results function and then calling generating mcq buttons func
      */
-    spriteLoading() {
+    async spriteLoading() {
         this.mcqButtonHolder?.removeAllChildren();
         this.number1?.removeAllChildren();
         this.number2?.removeAllChildren();
         this.symbol?.removeAllChildren();
 
-        Singleton.getInstance()
-            .loadIcons()
-            .then(() => {
-                this.icons = Singleton.getInstance().IconObject();
+        await this.callingCreateNodeFunc();
 
-                const randNumber1: number = randomRangeInt(0, 10);
-                this.createAndAddNode(
-                    this.number1,
-                    randNumber1,
-                    this.iconPrefab
-                );
+        await this.calculation();
 
-                const randNumber2: number = randomRangeInt(0, 4);
-                this.createAndAddNode(
-                    this.symbol,
-                    randNumber2,
-                    this.iconPrefab
-                );
-
-                const randNumber3: number = randomRangeInt(0, 10);
-                this.createAndAddNode(
-                    this.number2,
-                    randNumber3,
-                    this.iconPrefab
-                );
-            })
-            .then(() => {
-                this.calculation();
-            })
-            .then(() => {
-                this.mcqButtonGeneration();
-            });
+        await this.mcqButtonGeneration();
     }
+    async callingCreateNodeFunc() {
+        this.icons = Singleton.getInstance().IconObject();
 
+        const randNumber1: number = randomRangeInt(0, 10);
+        this.createAndAddNode(this.number1, randNumber1, this.iconPrefab);
+
+        const randNumber2: number = randomRangeInt(0, 4);
+        this.createAndAddNode(this.symbol, randNumber2, this.iconPrefab);
+
+        const randNumber3: number = randomRangeInt(0, 10);
+        this.createAndAddNode(this.number2, randNumber3, this.iconPrefab);
+    }
     /**
      * @description instantiate the prefab and checks whther it is a type symbol or number and then assign sprite to it accordingly
      * @param parent  node to which symbol or number needs to be child of
@@ -162,7 +146,7 @@ export class MainScript extends PopupBase {
     /**
      * @description calculating results according to the numbers generated
      */
-    calculation() {
+    async calculation() {
         switch (this.symbolCheck) {
             case "DIVIDE":
                 this.result = parseFloat(
@@ -195,7 +179,7 @@ export class MainScript extends PopupBase {
     /**
      * @description mcq button generation with random unique numbers
      */
-    mcqButtonGeneration() {
+    async mcqButtonGeneration() {
         let usedNumbers = new Set<number>();
         let correctButton: number = randomRangeInt(0, 9) % 4;
         for (let i = 0; i < this.totalMCQButtons; i++) {

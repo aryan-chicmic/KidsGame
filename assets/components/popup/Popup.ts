@@ -160,7 +160,7 @@ export class Popup extends PopupBase {
      * @description this function is called on button click of pop up : TryAgain or Next
      */
     protected onNormalBtnClick() {
-        MessageCenter.getInstance().send("check");
+        MessageCenter.getInstance().send("resumeSystemEvents");
         this.audioSource?.pause();
         Singleton.getInstance().MainScriptRef.getComponent(
             AudioSource
