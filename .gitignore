@@ -13,12 +13,23 @@ native
 #//////////////////////////
 node_modules/
 
-#//////////////////////////
-# VSCode
-#//////////////////////////
-.vscode/
 
 #//////////////////////////
 # WebStorm
 #//////////////////////////
 .idea/
+# Ignore build output directories
+/build/
+/temp/
+
+# Ignore Cocos Creator specific files
+library/
+local/
+
+# Ignore user-specific files
+settings/
+*.user.json
+
+# Ignore system and IDE files
+.DS_Store
+.vscode/

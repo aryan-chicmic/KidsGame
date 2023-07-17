@@ -1,4 +1,5 @@
 import { _decorator, AudioClip, AudioSource, Component, instantiate, JsonAsset, Node, Prefab, resources, SpriteFrame, Vec3 } from "cc";
+import { LetterIndex } from "./Constants";
 const { ccclass, property } = _decorator;
 
 @ccclass("Singleton")
@@ -107,7 +108,7 @@ export class Singleton extends Component {
    * @description adding button over alphabet image of main screen
    */
   addButtons() {
-    let audioClipIndex = 0;
+    // let audioClipIndex = 0;
     for (let i = 1; i < Object.keys(this.alphabetPositionJSON.json[0].posData).length + 1; i++) {
       let rowNumber = `row${i}`;
       console.log(rowNumber);
@@ -115,8 +116,13 @@ export class Singleton extends Component {
       for (let key in this.alphabetPositionJSON.json[0].posData[rowNumber]) {
         let alphaButton = instantiate(this.alphabetButton);
         alphaButton.name = `${key}`;
-        alphaButton.getComponent(AudioSource).clip = this.soundFolder[audioClipIndex];
-        audioClipIndex++;
+        console.log(alphaButton.name);
+
+        const letterIndex = LetterIndex[key];
+        console.log("letter index", letterIndex);
+
+        alphaButton.getComponent(AudioSource).clip = this.soundFolder[letterIndex];
+        // audioClipIndex++;
 
         let pos = this.alphabetPositionJSON.json[0].posData[rowNumber][key];
         alphaButton.setPosition(new Vec3(pos.x, pos.y, 0));
