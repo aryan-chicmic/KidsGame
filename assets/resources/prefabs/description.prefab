@@ -745,7 +745,7 @@
   },
   {
     "__type__": "cc.Node",
-    "_name": "Background",
+    "_name": "Board",
     "_objFlags": 0,
     "_parent": {
       "__id__": 1
@@ -2250,7 +2250,7 @@
     "animal": {
       "__id__": 53
     },
-    "numbr": {
+    "sideNumber": {
       "__id__": 59
     },
     "text": {
