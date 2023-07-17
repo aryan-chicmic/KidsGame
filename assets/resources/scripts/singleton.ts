@@ -1,9 +1,9 @@
 import { _decorator, AudioClip, AudioSource, Component, instantiate, JsonAsset, Node, Prefab, resources, SpriteFrame, Vec3 } from "cc";
 const { ccclass, property } = _decorator;
 
-@ccclass("singleton")
-export class singleton extends Component {
-  private static instance: singleton = null;
+@ccclass("Singleton")
+export class Singleton extends Component {
+  private static instance: Singleton = null;
   private target: string = "";
   private exampleImages: SpriteFrame[] = [];
   private nodeHolder: Node = null;
@@ -15,11 +15,11 @@ export class singleton extends Component {
   soundFolder: AudioClip[] = [];
   private singleton() {}
 
-  static getInstance(): singleton {
-    if (!singleton.instance) {
-      singleton.instance = new singleton();
+  static getInstance(): Singleton {
+    if (!Singleton.instance) {
+      Singleton.instance = new Singleton();
     }
-    return singleton.instance;
+    return Singleton.instance;
   }
   get Target(): string {
     return this.target;
@@ -65,6 +65,11 @@ export class singleton extends Component {
     this.alphabetNode = value;
   }
   start() {}
+
+  /**
+   * @description loading sprites
+   * @returns spriteframes
+   */
   loadSprites() {
     return new Promise<void>((resolve, reject) => {
       resources.loadDir("sprites/prefab/alphabhets", SpriteFrame, (err, assets) => {
@@ -72,13 +77,17 @@ export class singleton extends Component {
           reject(err);
           return;
         }
-        singleton.getInstance().ExampleImages = assets;
+        Singleton.getInstance().ExampleImages = assets;
         console.log(assets);
         resolve();
       });
     });
   }
 
+  /**
+   * @description loading audio clips
+   * @returns audioclips
+   */
   loadAudios() {
     return new Promise<void>((resolve, reject) => {
       resources.loadDir("sounds/alphabhetSounds", AudioClip, (err, assets) => {
@@ -94,6 +103,9 @@ export class singleton extends Component {
     });
   }
 
+  /**
+   * @description adding button over alphabet image of main screen
+   */
   addButtons() {
     let audioClipIndex = 0;
     for (let i = 1; i < Object.keys(this.alphabetPositionJSON.json[0].posData).length + 1; i++) {

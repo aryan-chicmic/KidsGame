@@ -1,5 +1,8 @@
 import { _decorator, AudioClip, Animation, AudioSource, Component, instantiate, Node, Prefab } from "cc";
-import { singleton } from "./singleton";
+
+import { MessageCenter } from "./MessageCenter";
+import { Singleton } from "./Singleton";
+
 const { ccclass, property } = _decorator;
 
 @ccclass("alphaButtonScript")
@@ -7,16 +10,21 @@ export class alphaButtonScript extends Component {
   @property({ type: Prefab })
   DescriptionPrefab: Prefab = null;
 
+  /**
+   * @description on click of main scene buttons
+   * @param event
+   */
   onClick(event) {
-    singleton.getInstance().BannerNode.getComponent(Animation).play("exit");
-    singleton.getInstance().BackgroundNodeHolder.pauseSystemEvents(true);
-    singleton.getInstance().BackgroundNodeHolder.getComponent(AudioSource).pause();
-    console.log("Target :", event.currentTarget);
-    singleton.getInstance().Target = event.currentTarget.name;
+    Singleton.getInstance().BannerNode.getComponent(Animation).play("exit");
+    MessageCenter.getInstance().send("pauseSysEvents");
+    Singleton.getInstance().BackgroundNodeHolder.getComponent(AudioSource).pause();
+    Singleton.getInstance().Target = event.currentTarget.name;
+    console.log(event.currentTarget.name);
+
     event.currentTarget.getComponent(AudioSource).play();
     setTimeout(() => {
       const prefabInstance = instantiate(this.DescriptionPrefab);
-      singleton.getInstance().BackgroundNodeHolder.addChild(prefabInstance);
+      Singleton.getInstance().BackgroundNodeHolder.addChild(prefabInstance);
     }, 1000);
   }
   update(deltaTime: number) {}
