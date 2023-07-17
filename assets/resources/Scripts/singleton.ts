@@ -5,6 +5,7 @@ const { ccclass, property } = _decorator;
 export class singleton extends Component {
   private static instance: singleton = null;
   private target: string = "";
+  private backgroundHolder: Node = null;
   private singleton() {}
 
   static getInstance(): singleton {
@@ -13,14 +14,18 @@ export class singleton extends Component {
     }
     return singleton.instance;
   }
+  get BackgroundHolder(): Node {
+    return this.backgroundHolder;
+  }
+  set BackgroundHolder(ref) {
+    this.backgroundHolder = ref;
+  }
   get Target(): string {
     return this.target;
   }
   set Target(value: string) {
     this.target = value;
   }
-  animStarter() {}
-  start() {}
 
   update(deltaTime: number) {}
 }

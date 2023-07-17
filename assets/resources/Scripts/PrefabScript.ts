@@ -1,15 +1,14 @@
 import { _decorator, AnimationClip, AudioSource, Component, Label, Node, Sprite, SpriteFrame, tween, Vec3 } from "cc";
 import { singleton } from "./singleton";
 import { MainScript } from "./MainScript";
+import { MessageCenter } from "./MessageCenter";
 
 const { ccclass, property } = _decorator;
 
 @ccclass("PrefabScript")
 export class PrefabScript extends Component {
   @property({ type: Node })
-  cracker: Node = null;
-  @property({ type: Node })
-  cracker1: Node = null;
+  crackerList: Node[] = [];
   @property({ type: SpriteFrame })
   spritesMain: SpriteFrame[] = [];
   @property({ type: SpriteFrame })
@@ -17,61 +16,82 @@ export class PrefabScript extends Component {
   @property({ type: Node })
   dog: Node = null;
   @property({ type: Node })
-  numbr: Node = null;
+  sideNumber: Node = null;
   @property({ type: Node })
   text: Node = null;
 
   start() {}
+  /**
+   * @description playing the BG sound and calling cracker animation and checking target to set sprites
+   */
   onLoad(): void {
-    this.node.parent.getChildByName("Bg").getComponent(AudioSource).play();
-    this.node.parent.getChildByName("Bg").getComponent(AudioSource).volume = 0.5;
-    this.node.parent.getChildByName("Bg").getComponent(AudioSource).loop = true;
-    this.targetChecker();
-    this.animateCracker();
+    singleton.getInstance().BackgroundHolder.getComponent(AudioSource).play();
+    singleton.getInstance().BackgroundHolder.getComponent(AudioSource).volume = 0.5;
+    singleton.getInstance().BackgroundHolder.getComponent(AudioSource).loop = true;
+    this.spriteSetter();
     this.animateCracker();
   }
-  targetChecker() {
+
+  /**
+   * @description setting sprites with respect to target name obtained
+   */
+  spriteSetter() {
     switch (singleton.getInstance().Target) {
-      case "One":
+      case "1":
         this.dog.setScale(0.1, 0.1);
         this.settingSprites(0, "1 DOG");
         break;
-      case "Two":
+      case "2":
         this.settingSprites(1, "2 DOGS");
         break;
-      case "Three":
+      case "3":
         this.settingSprites(2, "3 DOGS");
         break;
     }
   }
+
+  /**
+   *
+   * @param index here index is used to access particular sprite from array
+   * @param text text displayed at bottom
+   */
   settingSprites(index: number, text: string) {
     this.dog.getComponent(Sprite).spriteFrame = this.spritesMain[index];
-    this.numbr.getComponent(Sprite).spriteFrame = this.spritesSide[index];
+    this.sideNumber.getComponent(Sprite).spriteFrame = this.spritesSide[index];
     this.text.getComponent(Label).string = text;
   }
+
+  /**
+   * @description crackers are displayed using this
+   */
   animateCracker() {
-    const crackScale = 4;
+    const crackerScale = 4;
 
     const duration = 2;
 
     const onCompleteCallback = () => {
-      this.cracker.active = false;
-      this.cracker1.active = false;
+      this.crackerList.forEach((crackerNode) => {
+        crackerNode.active = false;
+      });
     };
 
     const animateNode = (node) => {
       tween(node)
-        .to(duration, { scale: new Vec3(crackScale, crackScale, 0) }, { easing: "sineOut", onComplete: onCompleteCallback })
+        .to(duration, { scale: new Vec3(crackerScale, crackerScale, 0) }, { easing: "sineOut", onComplete: onCompleteCallback })
         .start();
     };
-    animateNode(this.cracker);
-    animateNode(this.cracker1);
+    this.crackerList.forEach((crackerNode) => {
+      animateNode(crackerNode);
+    });
   }
 
+  /**
+   * @description on click of close button
+   */
   onCloseClick() {
-    this.node.parent.getChildByName("Bg").resumeSystemEvents(true);
-    this.node.parent.getChildByName("Bg").getComponent(AudioSource).play();
-    this.node.parent.getChildByName("Bg").getComponent(MainScript).playAnimation();
+    MessageCenter.getInstance().send("resumeWorking");
+    singleton.getInstance().BackgroundHolder.getComponent(AudioSource).play();
+    MessageCenter.getInstance().send("playAnimation");
     this.node.destroy();
   }
   update(deltaTime: number) {}
