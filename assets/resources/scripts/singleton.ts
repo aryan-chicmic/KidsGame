@@ -98,7 +98,7 @@ export class Singleton extends Component {
         }
 
         this.soundFolder = assets;
-        console.log(this.soundFolder);
+        console.log("sounds", this.soundFolder);
         resolve();
       });
     });
@@ -106,30 +106,50 @@ export class Singleton extends Component {
 
   /**
    * @description adding button over alphabet image of main screen
+   * @param index index is the row number
    */
-  addButtons() {
-    // let audioClipIndex = 0;
-    for (let i = 1; i < Object.keys(this.alphabetPositionJSON.json[0].posData).length + 1; i++) {
-      let rowNumber = `row${i}`;
+
+  addButtons(index: number) {
+    if (index < 5) {
+      const rowNumber = `row${index}`;
       console.log(rowNumber);
 
-      for (let key in this.alphabetPositionJSON.json[0].posData[rowNumber]) {
-        let alphaButton = instantiate(this.alphabetButton);
-        alphaButton.name = `${key}`;
-        console.log(alphaButton.name);
+      const rowAlphabetData = this.alphabetPositionJSON.json[0].posData[rowNumber];
+      this.addButtonRow(rowAlphabetData);
 
-        const letterIndex = LetterIndex[key];
-        console.log("letter index", letterIndex);
+      this.addButtons(index + 1);
+    }
+  }
 
-        alphaButton.getComponent(AudioSource).clip = this.soundFolder[letterIndex];
-        // audioClipIndex++;
+  /**
+   * @description setting audio on button
+   * @param rowAlphabetData data of each row ,fetching from JSON
+   */
+  addButtonRow(rowAlphabetData: any) {
+    for (const key in rowAlphabetData) {
+      const alphaButton = instantiate(this.alphabetButton);
+      alphaButton.name = `${key}`;
+      console.log(alphaButton.name);
 
-        let pos = this.alphabetPositionJSON.json[0].posData[rowNumber][key];
+      const soundClip = this.findSoundClipByName(`${key}`);
+      if (soundClip) {
+        alphaButton.getComponent(AudioSource).clip = soundClip;
+
+        const pos = rowAlphabetData[key];
         alphaButton.setPosition(new Vec3(pos.x, pos.y, 0));
 
         this.alphabetNode.addChild(alphaButton);
       }
     }
+  }
+
+  /**
+   * @description finding sound after comparing it to name of key passed into it
+   * @param name key i.e. which alphabhet button it is
+   * @returns  sound clip
+   */
+  findSoundClipByName(name: string): AudioClip | null {
+    return this.soundFolder.find((sound) => sound.name == name) || null;
   }
 
   update(deltaTime: number) {}

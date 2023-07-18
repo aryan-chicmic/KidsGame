@@ -15,10 +15,11 @@ export class mainScript extends Component {
   @property({ type: Node })
   bannerNode: Node = null;
 
+  initialRow: number = 0;
   onLoad() {
     this.registerEvents();
     this.singletonReferencePassing();
-    Singleton.getInstance().addButtons();
+    Singleton.getInstance().addButtons(this.initialRow);
   }
 
   /**
@@ -61,9 +62,9 @@ export class mainScript extends Component {
    * @description callback func to pause events from message center
    */
   pauseEvents() {
-    this.node.pauseSystemEvents(false);
+    this.node.pauseSystemEvents(true);
   }
-  
+
   protected start(): void {
     this.bannerNode.getComponent(Animation).play("entry");
   }
